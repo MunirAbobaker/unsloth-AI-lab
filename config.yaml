@@ -1,0 +1,42 @@
+model:
+  name: "unsloth/Meta-Llama-3.1-8B-bnb-4bit"
+  max_seq_length: 512
+  load_in_4bit: true
+  dtype: None
+  peft:
+    r: 16
+    lora_alpha: 16
+    lora_dropout: 0
+    target_modules: ["q_proj", "k_proj", "v_proj", "up_proj", "down_proj", "o_proj", "gate_proj"]
+    use_rslora: true
+    use_gradient_checkpointing: "unsloth"
+
+dataset:
+  name: "iamtarun/python_code_instructions_18k_alpaca"
+  split: "train"
+  merged_prompt: "{instruction}[[\nYour input is:\n{input}]]"
+  output_column_name: "output"
+  conversation_extension: 3
+
+training:
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 4
+  warmup_steps: 5
+  max_steps: 600
+  learning_rate: 0.002
+  fp16: true
+  bf16: false
+  logging_steps: 1
+  optim: "adamw_8bit"
+  weight_decay: 0.01
+  lr_scheduler_type: "linear"
+  seed: 3407
+  output_dir: "outputs"
+
+template:
+  name: "default"
+  content: |
+    <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+    {SYSTEM}<|eot_id|><|start_header_id|>user<|end_header_id|>
+    {INPUT}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+    {OUTPUT}<|eot_id|>

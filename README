@@ -1,0 +1,9 @@
+poetry init
+
+poetry add torch trl datasets transformers pyyaml unsloth
+
+poetry install
+
+
+
+poetry run python train.py --config config.yaml
